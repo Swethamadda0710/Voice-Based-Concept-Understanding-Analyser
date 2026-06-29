@@ -72,7 +72,7 @@ Voice-Based-Concept-Understanding-Analyser/
 ### 1. Clone the Repository
 
 ```bash
-git https://github.com/Swethamadda0710/Voice-Based-Concept-Understanding-Analyser.git
+git https://github.com/<your-username>/Voice-Based-Concept-Understanding-Analyser.git
 cd Voice-Based-Concept-Understanding-Analyser
 ```
 
