@@ -1,10 +1,15 @@
-def calculate_score(semantic_score, speech_rate, energy):
+def calculate_score(similarity, features):
     """
     Calculate overall understanding score.
+    similarity : float
+    features : dict containing duration, speech_rate, energy
     """
 
+    speech_rate = features["speech_rate"]
+    energy = features["energy"]
+
     # Semantic similarity (80%)
-    semantic_weight = semantic_score * 0.8
+    semantic_weight = similarity * 0.8
 
     # Speech rate score (10%)
     if 100 <= speech_rate <= 160:
