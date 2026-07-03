@@ -1,5 +1,6 @@
 import streamlit as st
 import os
+import pandas as pd
 
 from modules.speech_to_text import transcribe_audio
 from modules.semantic_analysis import calculate_similarity
@@ -9,6 +10,11 @@ from modules.audio_features import (
 )
 from modules.scoring import calculate_score
 from modules.pdf_report import generate_pdf
+from modules.history import save_result
+import plotly.express as px
+from modules.dashboard import get_dashboard_data
+from streamlit_mic_recorder import mic_recorder
+
 
 st.set_page_config(
     page_title="Voice Based Concept Understanding Analyser",
@@ -130,37 +136,114 @@ AI Powered Student Speech Evaluation System
 
 st.divider()
 
-reference_answer = """
-Artificial intelligence is transforming education by helping students learn more effectively.
+st.markdown('<div class="card">', unsafe_allow_html=True)
 
-Machine learning enables computers to learn from data without being explicitly programmed.
+st.subheader("📖 Reference Answer")
 
-Natural language processing allows computers to understand and generate human language.
-"""
+reference_answer = st.text_area(
+    "Teacher's Expected Answer",
+    height=180,
+    placeholder="Enter the teacher's reference answer..."
+)
+
+st.markdown("</div>", unsafe_allow_html=True)
+
+st.markdown('<div class="card">', unsafe_allow_html=True)
+
+st.subheader("👨‍🎓 Student Information")
+
+col1, col2 = st.columns(2)
+
+with col1:
+    student_name = st.text_input(
+        "Student Name *",
+        placeholder="Enter student name"
+    )
+
+with col2:
+    roll_number = st.text_input(
+        "Roll Number *",
+        placeholder="Enter roll number"
+    )
+
+col3, col4 = st.columns(2)
+
+with col3:
+    subject = st.selectbox(
+        "Subject",
+        [
+            "Artificial Intelligence",
+            "Operating System",
+            "DBMS",
+            "Computer Networks",
+            "Machine Learning",
+            "Java",
+            "Python",
+            "Other"
+        ]
+    )
+
+with col4:
+    section = st.text_input(
+        "Section",
+        placeholder="A / B / C"
+    )
+
+st.markdown("</div>", unsafe_allow_html=True)
 
 st.subheader("📤 Upload Student Audio")
 
 st.write("Upload a student's MP3 or WAV recording.")
 
+# Upload audio
 uploaded_file = st.file_uploader(
     "Choose an audio file",
     type=["mp3", "wav"]
 )
 
-if uploaded_file is not None:
+# Record audio
+st.markdown("### 🎙 Or Record Your Voice")
+
+recorded_audio = mic_recorder(
+    start_prompt="🎤 Start Recording",
+    stop_prompt="⏹ Stop Recording",
+    key="recorder"
+)
+if recorded_audio and recorded_audio["bytes"] is None:
+    st.error("Recording failed. Please record again.")
+    st.stop()
+
+# Continue if either upload or recording is available
+if uploaded_file is not None or recorded_audio:
 
     os.makedirs("audio", exist_ok=True)
     os.makedirs("reports", exist_ok=True)
 
-    audio_path = os.path.join(
-        "audio",
-        uploaded_file.name
-    )
+    # Uploaded file
+    if uploaded_file is not None:
 
-    with open(audio_path, "wb") as f:
-        f.write(uploaded_file.read())
+        audio_path = os.path.join(
+            "audio",
+            uploaded_file.name
+        )
 
-    st.success("✅ Audio uploaded successfully!")
+        with open(audio_path, "wb") as f:
+            f.write(uploaded_file.read())
+
+        st.success("✅ Audio uploaded successfully!")
+
+    # Recorded audio
+    else:
+
+        audio_path = os.path.join(
+            "audio",
+            "recorded_audio.wav"
+        )
+
+        with open(audio_path, "wb") as f:
+            f.write(recorded_audio["bytes"])
+
+        st.success("✅ Voice recorded successfully!")
 
     st.audio(audio_path)
 
@@ -180,9 +263,24 @@ if uploaded_file is not None:
 
     if analyze:
 
+        if not student_name.strip():
+            st.error("Please enter Student Name.")
+            st.stop()
+
+        if not roll_number.strip():
+            st.error("Please enter Roll Number.")
+            st.stop()
+
+        if not reference_answer.strip():
+            st.error("Please enter the Reference Answer.")
+            st.stop()
+
         with st.spinner("🤖 AI is analyzing the audio..."):
 
             transcript = transcribe_audio(audio_path)
+            if transcript.strip() == "":
+                st.error("Speech could not be recognized. Please upload a clearer audio.")
+                st.stop()
 
             st.markdown('<div class="card">', unsafe_allow_html=True)
 
@@ -267,6 +365,14 @@ if uploaded_file is not None:
                 similarity,
                 features
             )
+            save_result(
+            student_name,
+            roll_number,
+            subject,
+            similarity,
+            final_score,
+            feedback
+            )
 
             st.markdown('<div class="card">', unsafe_allow_html=True)
 
@@ -291,18 +397,93 @@ if uploaded_file is not None:
             st.markdown("</div>", unsafe_allow_html=True)
 
             pdf_path = generate_pdf(
-                transcript,
-                similarity,
-                features,
-                final_score,
-                feedback,
-                output_path="reports/Concept_Report.pdf"
+                student_name=student_name,
+                roll_number=roll_number,
+                subject=subject,
+                section=section,
+                transcript=transcript,
+                similarity=similarity,
+                features=features,
+                final_score=final_score,
+                feedback=feedback,
+                output_path=f"reports/{roll_number}_Concept_Report.pdf"
             )
+            st.success("🎉 Evaluation Completed Successfully!")
+            with open(pdf_path, "rb") as pdf_file:
+                st.download_button(
+                    label="📄 Download PDF Report",
+                    data=pdf_file,
+                    file_name=f"{roll_number}_Concept_Report.pdf",
+                    mime="application/pdf",
+                    use_container_width=True
+                )
+            
 
-            st.download_button(
-                label="📄 Download PDF Report",
-                data=open(pdf_path, "rb"),
-                file_name="Concept_Report.pdf",
-                mime="application/pdf",
-                use_container_width=True
-            )
+st.subheader("📊 Evaluation History")
+
+if os.path.exists("data/results.csv"):
+    history = pd.read_csv("data/results.csv")
+    st.dataframe(history, use_container_width=True)
+
+if os.path.exists("data/results.csv"):
+
+    dashboard = get_dashboard_data()
+
+    st.subheader("📊 Dashboard Analytics")
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.metric(
+            "Total Evaluations",
+            dashboard["total"]
+        )
+
+    with col2:
+        st.metric(
+            "Average Score",
+            f"{dashboard['average']}%"
+        )
+
+    with col3:
+        st.metric(
+            "Highest Score",
+            f"{dashboard['highest']}%"
+        )
+
+    feedback_counts = {
+        "Strong": dashboard["strong"],
+        "Moderate": dashboard["moderate"],
+        "Needs Improvement": dashboard["weak"]
+    }
+
+    fig = px.pie(
+        names=list(feedback_counts.keys()),
+        values=list(feedback_counts.values()),
+        title="Feedback Distribution"
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
+
+    fig2 = px.histogram(
+        dashboard["df"],
+        x="Final Score",
+        nbins=10,
+        title="Final Score Distribution"
+    )
+
+    st.plotly_chart(fig2, use_container_width=True)
+
+    fig3 = px.line(
+        dashboard["df"],
+        y="Similarity",
+        title="Student Similarity Scores"
+    )
+
+    st.plotly_chart(fig3, use_container_width=True)
+
+st.divider()
+
+st.caption(
+    "© 2026 Voice Based Concept Understanding Analyser "
+)
