@@ -1,5 +1,9 @@
 # 🎤 Voice Based Concept Understanding Analyser
 
+🌐 **Live Project**
+
+[https://voice-based-concept-understanding-analyser-ezu898jwphrtf5goswd.streamlit.app/](url)
+
 ## 📖 Project Description
 
 The **Voice Based Concept Understanding Analyser** is an AI-powered application that evaluates a student's spoken explanation of a concept. It converts speech into text, compares it with a reference answer using semantic similarity, analyzes audio features, calculates an understanding score, and generates a PDF report.
@@ -148,9 +152,7 @@ Reports are stored inside the **reports/** folder.
 
 ## 📸 Sample Output
 
--![Audio Uploading, Transcipt](assets/screenshots/image.png)
--![Semantic Similarity, Audio Features, Audio Waveform](assets/screenshots/image-1.png)
--![Final Evalution, PDF Download](assets/screenshots/image-2.png)
+
 
 ---
 
