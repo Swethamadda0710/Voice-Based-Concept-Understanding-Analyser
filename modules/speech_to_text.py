@@ -1,15 +1,21 @@
-import streamlit as st
 import whisper
-
-
-@st.cache_resource
-def load_model():
-    return whisper.load_model("base")
-
+import subprocess
 
 def transcribe_audio(audio_path):
-    model = load_model()
+    model = whisper.load_model("base")
 
-    result = model.transcribe(audio_path)
+    # Convert audio safely for Streamlit Cloud
+    command = [
+        "ffmpeg",
+        "-i", audio_path,
+        "-ar", "16000",
+        "-ac", "1",
+        "-f", "wav",
+        "temp.wav",
+        "-y"
+    ]
 
+    subprocess.run(command, check=True)
+
+    result = model.transcribe("temp.mp3")
     return result["text"]
