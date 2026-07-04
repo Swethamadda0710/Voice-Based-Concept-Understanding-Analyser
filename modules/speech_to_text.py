@@ -1,21 +1,32 @@
 import whisper
 import subprocess
+import os
+
+
+# Load the model only once
+model = whisper.load_model("base")
+
 
 def transcribe_audio(audio_path):
-    model = whisper.load_model("base")
+    temp_audio = "temp.wav"
 
-    # Convert audio safely for Streamlit Cloud
+    # Convert audio to WAV format
     command = [
         "ffmpeg",
+        "-y",
         "-i", audio_path,
         "-ar", "16000",
         "-ac", "1",
-        "-f", "wav",
-        "temp.wav",
-        "-y"
+        temp_audio
     ]
 
     subprocess.run(command, check=True)
 
-    result = model.transcribe("temp.mp3")
+    # Transcribe the converted audio
+    result = model.transcribe(temp_audio)
+
+    # Remove temporary file
+    if os.path.exists(temp_audio):
+        os.remove(temp_audio)
+
     return result["text"]
