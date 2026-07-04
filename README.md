@@ -1,31 +1,78 @@
 # 🎤 Voice Based Concept Understanding Analyser
 
-🌐 **Live Project**
+An AI-powered web application that evaluates a student's spoken explanation of a concept using **Speech-to-Text**, **Natural Language Processing (NLP)**, and **Audio Feature Analysis**.
 
-[https://voice-based-concept-understanding-analyser-ezu898jwphrtf5goswd.streamlit.app/](url)
+---
+
+## 🚀 Project Status
+
+✅ Completed
+
+🌐 Successfully Deployed on Streamlit Cloud
+
+---
+
+## 🌐 Live Demo
+
+🔗 **Streamlit App:**  
+https://voice-based-concept-understanding-analyser-5h8yakbhdlpv4tu2hb5.streamlit.app/
+
+---
+
+## 💻 GitHub Repository
+
+🔗 **GitHub:**  
+https://github.com/Swethamadda0710/Voice-Based-Concept-Understanding-Analyser
+
+---
 
 ## 📖 Project Description
 
-The **Voice Based Concept Understanding Analyser** is an AI-powered application that evaluates a student's spoken explanation of a concept. It converts speech into text, compares it with a reference answer using semantic similarity, analyzes audio features, calculates an understanding score, and generates a PDF report.
+The **Voice Based Concept Understanding Analyser** helps evaluate a student's conceptual understanding by analyzing their spoken explanation.
+
+The application performs the following tasks:
+
+- Converts speech into text using **OpenAI Whisper**
+- Compares the student's answer with the teacher's reference answer using **Sentence Transformers**
+- Extracts important audio features
+- Calculates an overall understanding score
+- Generates a professional PDF report
+- Displays evaluation history and dashboard analytics
 
 ---
 
-## ✨ Features
+## 🎯 Objectives
 
-- 🎤 Speech-to-Text using OpenAI Whisper
-- 🧠 Semantic Similarity using Sentence Transformers
+- Evaluate students' spoken explanations using AI.
+- Convert speech into text accurately.
+- Compare student answers with a reference answer.
+- Calculate semantic similarity.
+- Extract speech-related audio features.
+- Generate an AI-based evaluation score.
+- Produce downloadable PDF reports.
+- Maintain evaluation history and analytics.
+
+---
+
+# ✨ Features
+
+- 🎤 Speech-to-Text (OpenAI Whisper)
+- 🧠 Semantic Similarity Analysis
 - 🎵 Audio Feature Extraction
   - Duration
   - Speech Rate
-  - Audio Energy
+  - Energy
 - 📈 Audio Waveform Visualization
-- 🏆 Automatic Understanding Score
+- 🏆 AI-based Evaluation Score
 - 📄 PDF Report Generation
-- 🌐 Interactive Streamlit Web Interface
+- 📊 Evaluation History
+- 📈 Dashboard Analytics
+- 🎙 Voice Recording Support
+- 🌐 Interactive Streamlit Web Application
 
 ---
 
-## 🛠 Technologies Used
+# 🛠 Technologies Used
 
 - Python
 - Streamlit
@@ -34,18 +81,21 @@ The **Voice Based Concept Understanding Analyser** is an AI-powered application 
 - PyTorch
 - Librosa
 - NumPy
+- Pandas
+- Plotly
 - Matplotlib
 - ReportLab
 
 ---
 
-## 📂 Project Structure
+# 📂 Project Structure
 
-```
+```text
 Voice-Based-Concept-Understanding-Analyser/
 │
 ├── app.py
 ├── requirements.txt
+├── packages.txt
 ├── README.md
 ├── .gitignore
 │
@@ -54,35 +104,35 @@ Voice-Based-Concept-Understanding-Analyser/
 │   ├── semantic_analysis.py
 │   ├── audio_features.py
 │   ├── scoring.py
-│   └── pdf_report.py
-│
-├── tests/
-│   ├── test_whisper.py
-│   ├── test_semantic.py
-│   ├── test_audio_features.py
-│   └── test_scoring.py
-│
-├── audio/
+│   ├── pdf_report.py
+│   ├── history.py
+│   └── dashboard.py
 │
 ├── assets/
+│   └── screenshots/
 │
-└── reports/
+├── audio/
+├── reports/
+├── data/
+│   └── results.csv
+│
+└── tests/
 ```
 
 ---
 
-## ⚙ Installation
+# ⚙ Installation
 
-### 1. Clone the Repository
+## 1️⃣ Clone the Repository
 
 ```bash
-git https://github.com/Swethamadda0710/Voice-Based-Concept-Understanding-Analyser.git
+git clone https://github.com/Swethamadda0710/Voice-Based-Concept-Understanding-Analyser.git
 cd Voice-Based-Concept-Understanding-Analyser
 ```
 
 ---
 
-### 2. Create Virtual Environment
+## 2️⃣ Create Virtual Environment
 
 ```bash
 python -m venv .venv
@@ -90,15 +140,9 @@ python -m venv .venv
 
 ---
 
-### 3. Activate Virtual Environment
+## 3️⃣ Activate Virtual Environment
 
-Windows PowerShell
-
-```bash
-.venv\Scripts\Activate.ps1
-```
-
-Windows CMD
+### Windows
 
 ```bash
 .venv\Scripts\activate
@@ -106,7 +150,7 @@ Windows CMD
 
 ---
 
-### 4. Install Required Packages
+## 4️⃣ Install Dependencies
 
 ```bash
 pip install -r requirements.txt
@@ -114,57 +158,110 @@ pip install -r requirements.txt
 
 ---
 
-### 5. Install FFmpeg
-
-Download FFmpeg and add it to your system PATH.
-
-Verify installation:
-
-```bash
-ffmpeg -version
-```
-
----
-
-### 6. Run the Project
+## 5️⃣ Run the Project
 
 ```bash
 streamlit run app.py
 ```
 
-The application will open in your browser.
+The application will automatically open in your browser.
 
 ---
 
-## 📄 Generated Report
+# 📄 Generated Report
 
-The application generates a PDF report containing:
+The application generates a detailed PDF report containing:
 
+- Student Details
 - Transcript
 - Semantic Similarity
 - Audio Features
-- Final Score
+- Final Evaluation Score
 - Feedback
 
-Reports are stored inside the **reports/** folder.
+Reports are automatically saved inside the **reports/** folder.
 
 ---
 
-## 📸 Sample Output
+# 📸 Sample Output
 
+## Home Page
 
+![Home Page](assets/screenshots/image.png)
 
 ---
 
-## 👩‍💻 Team Members
+## Student Info & Audio Upload 
 
-- Swetha Madda
-- Pechetti Harshini
-- Yogeswari Vasantala
-- Shiva Shankar Yellaboyina
-- Syed Mohammad Saad
+![Student Info & Audio Upload](assets/screenshots/image-1.png)
+
 ---
 
-## 📜 License
+## Analysis Results
+
+![Analysis Result 1](assets/screenshots/image-2.png)
+
+![Analysis Result 2](assets/screenshots/image-3.png)
+
+---
+
+## Final Evaluation 
+
+![Final Evaluation 1](assets/screenshots/image-5.png)
+
+![Final Evaluation 2](assets/screenshots/image-6.png)
+
+![Final Evaluation 3](assets/screenshots/image-7.png)
+
+![Final Evaluation 4](assets/screenshots/image-8.png)
+
+---
+
+## PDF Report
+
+![PDF Report](assets/screenshots/image-9.png)
+
+---
+
+# 🚀 Future Enhancements
+
+- Real-time Speech Streaming
+- Multi-language Support
+- Teacher Login Portal
+- Student Login Portal
+- Cloud Database Integration
+- AI Feedback Suggestions
+- Performance Analytics
+
+---
+
+# 👩‍💻 Team Members
+
+- **Swetha Madda**
+- **Yogeswari Vasantala**
+- **Shiva Shankar Yellaboyina**
+- **Syed Mohammad Saad**
+
+---
+
+# 📚 References
+
+- Python – https://www.python.org/
+- Streamlit – https://streamlit.io/
+- OpenAI Whisper – https://github.com/openai/whisper
+- Sentence Transformers – https://www.sbert.net/
+- Librosa – https://librosa.org/
+- PyTorch – https://pytorch.org/
+- ReportLab – https://www.reportlab.com/
+
+---
+
+# 📜 License
 
 This project is developed for educational purposes.
+
+---
+
+# ⭐ Support
+
+If you found this project useful, consider giving it a ⭐ on GitHub.
