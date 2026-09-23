@@ -230,8 +230,7 @@ Reports are automatically saved inside the **reports/** folder.
 # 👩‍💻 Team Members
 
 - **Swetha Madda**
-- **Yogeswari Vasantala**
-- **Shiva Shankar Yellaboyina**
+- **Divya Teja**
 - **Syed Mohammad Saad**
 
 ---
