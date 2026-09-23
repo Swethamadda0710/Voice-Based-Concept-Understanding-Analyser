@@ -205,7 +205,7 @@ Reports are automatically saved inside the **reports/** folder.
 
 ## Final Evaluation 
 
-![Final Evaluation ](assets/screenshots/Final Evalution.png)
+![Final Evaluation](assets/screenshots/Final.png)
 
 ---
 
