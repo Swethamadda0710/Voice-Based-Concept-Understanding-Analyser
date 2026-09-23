@@ -10,26 +10,36 @@ def render_login(authenticate, create_user):
         st.markdown("<h1 class='login-title'>Understand every<br><em>spoken idea.</em></h1>", unsafe_allow_html=True)
         st.markdown("<p class='login-copy'>Transform student responses into clear, actionable understanding with responsible AI.</p>", unsafe_allow_html=True)
         with st.form("login_form"):
+            role = st.radio("Sign in as", ["Student", "Teacher"], horizontal=True)
             username = st.text_input("Username", placeholder="Your username")
             password = st.text_input("Password", type="password", placeholder="Your password")
             remember = st.checkbox("Remember me", value=True)
             submitted = st.form_submit_button("Sign in  →", use_container_width=True)
             if submitted:
-                if authenticate(username, password):
+                user = authenticate(username, password, role.lower())
+                if user:
                     st.session_state.authenticated = True
-                    st.session_state.username = username.strip()
+                    st.session_state.user = user
+                    st.session_state.username = user["username"]
+                    st.session_state.role = user["role"]
+                    st.session_state.active_page = "Dashboard"
                     st.session_state.remember = remember
                     st.rerun()
                 else:
                     st.error("Those credentials do not match our records.")
         with st.expander("New to ConceptLens AI? Create an account"):
             with st.form("signup_form"):
+                account_role = st.radio("Account type", ["Student", "Teacher"], horizontal=True)
                 new_username = st.text_input("New username")
                 new_password = st.text_input("New password", type="password")
+                new_name = st.text_input("Full name")
+                new_email = st.text_input("Email")
+                new_class = st.text_input("Class", value="CSE") if account_role == "Student" else ""
+                new_section = st.selectbox("Section", ["A", "B", "C", "D"]) if account_role == "Student" else ""
                 if st.form_submit_button("Create account", use_container_width=True):
-                    success, message = create_user(new_username, new_password)
+                    success, message = create_user(new_username, new_password, account_role.lower(), new_name, new_email, new_class, new_section)
                     (st.success if success else st.error)(message)
-        st.caption("Demo access: admin / admin123")
+        st.caption("Demo teacher: teacher / teacher123 · Demo student: student / student123")
         st.markdown("</div>", unsafe_allow_html=True)
     with right:
         st.markdown("<div class='login-art'><div class='neural-grid'></div><div class='orb orb-one'></div><div class='orb orb-two'></div><div class='mic-illustration'>♬</div><div class='art-caption'><b>Hear the thinking.</b><span>Measure the understanding.</span></div><div class='floating-stat stat-one'>↗ <b>+24%</b><small>clarity detected</small></div><div class='floating-stat stat-two'>◉ <b>94.8</b><small>concept match</small></div></div>", unsafe_allow_html=True)

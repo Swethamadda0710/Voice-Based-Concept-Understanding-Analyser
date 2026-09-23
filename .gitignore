@@ -30,6 +30,7 @@ assets/*.png
 
 # Environment Variables
 .env
+.streamlit/secrets.toml
 
 # Local authentication database
 data/users.db

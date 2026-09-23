@@ -1,59 +1,24 @@
-import hashlib
-import os
-import sqlite3
+from modules import portal_db
 
 
-DB_PATH = os.path.join("data", "users.db")
-
-
-def _connect():
-    os.makedirs("data", exist_ok=True)
-    connection = sqlite3.connect(DB_PATH)
-    connection.execute("CREATE TABLE IF NOT EXISTS users (username TEXT PRIMARY KEY, password TEXT NOT NULL)")
-    return connection
-
-
-def _hash_password(password):
-    return hashlib.sha256(password.encode("utf-8")).hexdigest()
-
-
-def create_user(username, password):
-    username = username.strip()
-    if not username or not password:
-        return False, "Enter a username and password."
-    connection = _connect()
-    try:
-        connection.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, _hash_password(password)))
-        connection.commit()
-    except sqlite3.IntegrityError:
-        return False, "That username is already in use."
-    finally:
-        connection.close()
-    return True, "Account created. You can sign in now."
+def create_user(username, password, role="student", name="", email="", class_name="CSE", section="A"):
+    return portal_db.create_user(username, password, role, name, email, class_name, section)
 
 
 def authenticate(username, password):
-    connection = _connect()
-    row = connection.execute("SELECT username FROM users WHERE username = ? AND password = ?", (username.strip(), _hash_password(password))).fetchone()
-    connection.close()
-    return row is not None
+    return portal_db.get_user(username, password) is not None
+
+
+def authenticate_user(username, password, role):
+    return portal_db.get_user(username, password, role)
 
 
 def change_password(username, current_password, new_password):
-    if not authenticate(username, current_password):
+    user = portal_db.get_user(username, current_password)
+    if not user:
         return False
-    connection = _connect()
-    connection.execute("UPDATE users SET password = ? WHERE username = ?", (_hash_password(new_password), username.strip()))
+    connection = portal_db.connect()
+    connection.execute("UPDATE users SET password = ? WHERE id = ?", (portal_db._hash_password(new_password), user["id"]))
     connection.commit()
     connection.close()
     return True
-
-
-def seed_demo_user():
-    connection = _connect()
-    connection.execute("INSERT OR IGNORE INTO users (username, password) VALUES (?, ?)", ("admin", _hash_password("admin123")))
-    connection.commit()
-    connection.close()
-
-
-seed_demo_user()
