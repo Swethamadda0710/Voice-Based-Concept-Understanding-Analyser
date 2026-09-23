@@ -166,6 +166,18 @@ streamlit run app.py
 
 The application will automatically open in your browser.
 
+## Streamlit Cloud Secrets
+
+Local `.streamlit/secrets.toml` files are intentionally excluded from Git. After deploying, open your app in Streamlit Cloud and go to **Settings → Secrets**. Add:
+
+```toml
+GEMINI_API_KEY = "your-new-gemini-api-key"
+GEMINI_REFERENCE_MODEL = "gemini-2.5-flash"
+GEMINI_TIMEOUT_SECONDS = 60
+```
+
+Save the secrets and reboot the app. Do not commit the API key to the repository. If a key has been exposed in a log or URL, revoke it and create a replacement first.
+
 ---
 
 # 📄 Generated Report

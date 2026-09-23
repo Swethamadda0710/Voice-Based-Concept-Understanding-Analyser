@@ -19,9 +19,24 @@ def _setting(name):
 def _gemini_request(model, api_key, prompt):
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
     payload = {"contents": [{"parts": [{"text": prompt}]}], "generationConfig": {"temperature": 0.2}}
+    try:
+        timeout = max(10, int(_setting("GEMINI_TIMEOUT_SECONDS") or 60))
+    except (TypeError, ValueError):
+        timeout = 60
     last_response = None
     for attempt in range(3):
-        response = requests.post(url, params={"key": api_key}, json=payload, timeout=30)
+        try:
+            response = requests.post(url, params={"key": api_key}, json=payload, timeout=timeout)
+        except requests.Timeout as error:
+            if attempt == 2:
+                raise RuntimeError(f"Gemini timed out after {timeout} seconds. Try again or use a faster model such as 'gemini-2.5-flash'.") from error
+            time.sleep(2 ** attempt)
+            continue
+        except requests.ConnectionError as error:
+            if attempt == 2:
+                raise RuntimeError("Gemini could not be reached. Check the deployed app's network connection and try again.") from error
+            time.sleep(2 ** attempt)
+            continue
         last_response = response
         if response.status_code not in {429, 500, 502, 503, 504}:
             break
@@ -62,7 +77,7 @@ def generate_reference_answer(question, concept, detail="Medium"):
             "https://api.openai.com/v1/chat/completions",
             headers={"Authorization": f"Bearer {openai_key}", "Content-Type": "application/json"},
             json={"model": _setting("OPENAI_REFERENCE_MODEL") or "gpt-4o-mini", "messages": [{"role": "user", "content": prompt}], "temperature": 0.2},
-            timeout=30,
+            timeout=60,
         )
         response.raise_for_status()
         content = response.json().get("choices", [{}])[0].get("message", {}).get("content", "").strip()
