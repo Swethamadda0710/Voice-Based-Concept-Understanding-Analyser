@@ -187,39 +187,31 @@ Reports are automatically saved inside the **reports/** folder.
 
 ## Home Page
 
-![Home Page](assets/screenshots/image.png)
+![Home Page](assets/screenshots/Home.png)
 
 ---
 
 ## Student Info & Audio Upload 
 
-![Student Info & Audio Upload](assets/screenshots/image-1.png)
+![Student Info & Audio Upload](assets/screenshots/Input.png)
 
 ---
 
 ## Analysis Results
 
-![Analysis Result 1](assets/screenshots/image-2.png)
-
-![Analysis Result 2](assets/screenshots/image-3.png)
+![Analysis Result](assets/screenshots/Analysis.png)
 
 ---
 
 ## Final Evaluation 
 
-![Final Evaluation 1](assets/screenshots/image-5.png)
-
-![Final Evaluation 2](assets/screenshots/image-6.png)
-
-![Final Evaluation 3](assets/screenshots/image-7.png)
-
-![Final Evaluation 4](assets/screenshots/image-8.png)
+![Final Evaluation ](assets/screenshots/Final Evalution.png)
 
 ---
 
 ## PDF Report
 
-![PDF Report](assets/screenshots/image-9.png)
+![PDF Report](assets/screenshots/PDF.png)
 
 ---
 
